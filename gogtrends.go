@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -16,6 +17,18 @@ var client = newGClient()
 // Debug allows to see request-response details.
 func Debug(debug bool) {
 	client.debug = debug
+}
+
+func AddProxy(proxy string) error {
+	proxyUrl, err := url.Parse(proxy)
+
+	if err != nil {
+		return err
+	}
+
+	client.c.Transport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+
+	return nil
 }
 
 // TrendsCategories return list of available categories for Realtime method as [param]description map.
